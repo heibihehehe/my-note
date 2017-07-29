@@ -1,0 +1,194 @@
+项目一：电商页面整站开发
+   HTML+css整站开发：编写一个满足电商需求的各个页面。
+      一：用div附以一些dd/dt/dl，ul/li的应用布局，整合css，
+      二：用margin、padding、text-indent、border等距离进行计算，测量各个div或者其他标签之间的距离。
+      三：理解position的相对定位和绝对定位于float之间的关系，对框架浮动和位置进行处理。float时要考虑到层次之间的
+   关系和清浮动等动作。
+四：在处理上要考虑到不同浏览器的兼容问题；基本的处理方式。
+五：并对一些icon的图片整合，采用相对距离的位置截取来获取小图标，优化性能。对满足font的简写样式就尽量简写。
+六：对一些常用的样式编写在记事本以备用。
+ 
+项目二：圣诞爱情主题项目开发
+   HTML+CSS+js共同开发：静态页面+组合图片的运动+SVG画图+图片的3D旋转运动+canvas画图。
+一：对于静态页面用section辅以div，用rem取代px单位进行计算。
+二：对关键帧动画采用自适应雪碧图，在类中加入background-size：x% y%;对雪碧图进行缩放。在加上
+ -webkit-animation: treeAnim 1000ms steps(2) infinite; 关键帧切换运动起来。-webkit-适应浏览器；
+  各个属性依次代表  动画名  运动时间  图片关键帧切换  运动次数。
+  对于图片关键帧切换的控制采用
+@-webkit-keyframes动画名 {
+    0% { background-position: -0% 100%; }
+  100% { background-position: -300% 100%; }
+}
+若需要可以加上其他属性，加上状态控制-webkit-animation-play-state: paused;
+对于多个关键帧动画的控制可以用上js中的Deferred异步封装处理           
+先定义一个场景类
+//页面容器元素
+   var $pageA = $(".page-a");
+     //构建第一个场景页面对象
+     new pageA($pageA);
+      function PageA(e){   
+//根元素  
+this.$root = element;
+//对象名获取css
+this.$对象-name = element.find(".css-name");
+}
+Deferred封装   
+pageA.prototype.next = function(options) {
+    var dfd = $.Deferred();
+     this.$boy.transition(options.style, options.time, "linear",function() {
+       dfd.resolve()
+    });
+    return dfd; }
+pageA.prototype.function-name= function(callback){
+    var that = this;
+    var next = function() {
+        return this.next.apply(this, arguments)
+            }.bind(this)
+next().then(function){}.then().then()......
+    }
+  三：SVG画图主要用到绘制多边形的标签polygon，通过points属性来个各个角定x和y坐标。用linearGradient元素对图形
+   颜色进行填充。示例：  
+<svg viewBox="0 0 1000 800">
+             <polygon points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,
+499.295 256.814,384.427 98.713"></polygon>
+         </svg>
+<defs>
+                <linearGradient id="star" x1="0%" y1="0%" x2="100%" y2="0%">
+                     <stop offset="0%" stop-color="#FCF0BC"></stop>  渐变色设置
+                     <stop offset="0%" stop-color="#FCF0BC"></stop>
+                 </linearGradient>
+             </defs>
+
+四：3D图片运动旋转：
+运动：在样式中添加-webkit-transform-style: preserve-3d;perspective(length) 为一个元素设置三维透视的
+    距离。仅作用于元素的后代。再加上js同关键帧动画的控制步骤。
+旋转：先对要旋转的3D图创建一个对象
+var $carousel = element.find("#carousel"); //旋转木马对象
+     var carousel = new Carousel($carousel, {
+           imgUrls: [用于旋转的图片地址]});
+   然后在用js对要旋转的对象进行结构创建
+function createStr(imgUrl) {
+         var str = '<figure style="transform:rotateY({0}deg) translateZ({1}) scaleY(.9);position:absolute;">'
+                     + '<img src="{2}" style="width:100%;height:100%;">'
+                  + '</figure>'; return String.format(str, start, "2.5rem", imgUrl )
+     }
+  初始化样式，绘制页面节点，在运行。
+function initStyle() {
+        //场景元素
+        $carousel.css({
+            // "transform": "scale(0.3)",
+            "-webkit-perspective": "500",
+            "-moz-perspective": "500px",
+            "position": "absolute",
+            "left": "6.8rem",
+            "top": "4.5rem"
+        });
+        //容器
+        $spinner.css({
+            "width": "4rem",
+            "transform-style": "preserve-3d"
+        })
+    }
+  绘制页面节点
+     /* @return {[type]} [description]
+     */
+    function render() {
+        //创建内容
+         var contentStr = '';
+        $.each(imgUrls, function(index, url) {
+            contentStr += createStr(url);
+             start = start + rotate;
+        })
+         $contentElements = $(contentStr);
+        $spinner.append($contentElements)
+    }
+运行
+this.run = function(count, callback) {
+        currIndex = count;
+        //360
+        //480
+        //600
+        angle = (count - 1) * rotate + 360
+        $spinner
+             .css({
+               "transform": "rotateY(-" + angle + "deg)",
+                "transition":"1s"
+            })
+           .css({
+                 "-moz-transform": "rotateY(-" + angle + "deg)",
+                "-moz-transition":"1s"
+             })
+             .one("transitionend webkitTransitionend", function() {
+                //去掉transition保留在样式上
+                 //照成的缩放元素会有动画变化
+                $spinner.css("transition","")
+                $spinner.css("-moz-transition","")
+                alert("旋转完成")
+            })
+    }
+五：canvas画图：飘雪的实现。首先画出雪花球,再绘制，更新
+            var snowElement = document.getElementById(elementName)
+           var canvasContext = snowElement.getContext("2d");
+         var width = config.clientWidth;
+           var height = config.clientHeight;
+绘制&更新
+var render = function() {
+            //清理之前的矩形数据
+             canvasContext.clearRect(0, 0, width, height);
+             for (var i = 0; i < snowArrNum; ++i) {
+                snowArrObjs[i].render(canvasContext);
+            }
+        }
+var update = function() {
+            for (var i = 0; i < snowArrNum; ++i) {
+                snowArrObjs[i].update();
+             }
+        }
+再定义一个雪球类，控制其运行在一定范围内，再绘制更新。
+ 
+项目三：秒杀特卖活动
+ 
+  一：从已有的网页中复制代码，顺带拷贝样式。涉及到的技巧。
+ 定位问题：float浮动定位，占据空间。会覆盖其他容器。在连续使用时用注意用clear来清浮动。
+        position：relative，占据空间，用z-index来处理覆盖，是相对上一级来进行定位的。
+  position：absolute，
+不占用空间，是相对于最近的主题定位元素或者最初的包含定位的元素。
+ 鼠标样式：cursor：default|help|wait|text|auto|e-re...
+ 定时器问题：setTimeout（'function（）'，seconds）,循环就是在应用到定时器时的函数调用本身；
+  若要清除，就把setTimeout赋值给变量，在把变量传给clearsetTimeout（变量）
+ 
+            setInterval('function,interval,[,args1,args2.....]');  每隔一段时间调用函数
+ setInterval(object ,methodName,interval,[,args1,args2])  若清除则clearInterval();
+ aJax：若open（）中采用的是post方法就得加上
+     xmlHttpRequest.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+若open（）中采用get方法就可在open中的第二个参数的url可加上变量。且send方法可不需要参数。不在加头部;
+
+ 可用document.write("<s"+"cript type='text/JavaScript' src='...js?"+Math.random()+"'></src"+"ipt>")来解决js的缓存。
+
+  二：在商品即将进入抢购的时候，使用定时器触动活动。
+ server端：json语句；array(
+ 'errno='0';
+ 'data'=(
+    'url'='xxx',  商品地址
+    'token'='token', 校验地址合法性
+    'itemid'='id',   商品id，唯一下单地址
+  ),
+)
+ client客户顿：通过setTimeout调用ajax函数。返回json语句转化为对象再进行判断。把时间显示变为抢购按钮或链接。
+ajax中的open中open（“get”，url+"?id="+ v1 +"+"&userid="+ userid,true）;
+再在ajaxcallback函数中判断errno是否为true，在根据对象改变显示时间的状态和样式。
+对document.getElementById("idname").innerHTML=obj.data.token中的数据存放到div中； 
+
+ 三：页面结构整改
+ 1、对商品的url地址中设置秒杀时间和商品id进行配对。如：data-click="{time:2334,item:294793874}"；
+ 2、用  var data= document.getElementById("id-name").getAttribute(data-click) 获取时间和id；
+   转化为对象       var obj=eval("("+data+")");  var target=obj.time;
+   再获取现在时间    now-time=parseInt(new Date().valueOf/1000);，
+   用left-time=target - now-time就是用于判断触发事件时间的显示和其他事件的判断。
+ 转换关系为：var day=Math.floor(maxtime/86400);
+    left-time=Math.floor(maxtime%86400);
+    var hour=Math.floor(left-time/3600);
+    left-time=Math.floor(left-time%3600);
+    var minute=Math.floor(left-time/60);
+    var second=Math.floor(left-time%60);
+             js最好放在后面。
