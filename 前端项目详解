@@ -183,12 +183,38 @@ ajax中的open中open（“get”，url+"?id="+ v1 +"+"&userid="+ userid,true）
  1、对商品的url地址中设置秒杀时间和商品id进行配对。如：data-click="{time:2334,item:294793874}"；
  2、用  var data= document.getElementById("id-name").getAttribute(data-click) 获取时间和id；
    转化为对象       var obj=eval("("+data+")");  var target=obj.time;
-   再获取现在时间    now-time=parseInt(new Date().valueOf/1000);，
-   用left-time=target - now-time就是用于判断触发事件时间的显示和其他事件的判断。
- 转换关系为：var day=Math.floor(maxtime/86400);
+    再获取现在时间    now-time=parseInt(new Date().valueOf/1000);，
+    用left-time=target - now-time就是用于判断触发事件时间的显示和其他事件的判断。
+  转换关系为：var day=Math.floor(maxtime/86400);
     left-time=Math.floor(maxtime%86400);
     var hour=Math.floor(left-time/3600);
     left-time=Math.floor(left-time%3600);
     var minute=Math.floor(left-time/60);
     var second=Math.floor(left-time%60);
-             js最好放在后面。
+    js最好放在后面。
+    用于控制js的缓存
+    <script >
+  	      document.write("<s"+"cript type='text/javascript' src='../FILE/JS/maio.js?"+Math.random()+"'> </scr"+"ipt>")   
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
